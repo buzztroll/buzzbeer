@@ -1,0 +1,6 @@
+asgiref==3.8.1
+Django==5.0.6
+django-rest-framework==0.1.0
+djangorestframework==3.15.1
+HX711 @ git+https://github.com/gandalf15/HX711.git@a2b72a0b44fc200112ecb25e11b60a5ee4ba7d56#subdirectory=HX711_Python3
+sqlparse==0.5.0
