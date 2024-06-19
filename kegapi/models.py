@@ -1,3 +1,4 @@
+import uuid
 
 import django.db.models as djmodels
 
@@ -28,32 +29,11 @@ class Scales(djmodels.Model):
     known_weight_reading = djmodels.FloatField(default=0.0)
     known_weight = djmodels.FloatField(default=0.0)
 
-#
-# class Kegs(djmodels.Model):
-#     KegStateMap = {
-#         KegStates.NONE: 'NONE',
-#         KegStates.ZEROED: 'ZEROED',
-#         KegStates.CALIBRATED: 'Calibrating',
-#         KegStates.RUNNING: 'Running',
-#         KegStates.STOPPED: 'Stopped'
-#     }
-#
-#     state = djmodels.CharField(
-#         max_length=1,
-#         choices=KegStateMap,
-#         default='N',
-#     )
-#     creation_time = djmodels.DateTimeField(
-#         auto_now_add=True, auto_now=False, blank=True, db_index=True)
-#     scale = djmodels.ForeignKey(Scales, on_delete=djmodels.CASCADE)
-#     full_weight_reading = djmodels.FloatField(default=0.0)
-#     full_weight = djmodels.FloatField(default=0.0)
-#
-#
-# class WeightReadings(djmodels.Model):
-#     read_time = djmodels.DateTimeField(
-#         auto_now_add=True, auto_now=False, blank=True, db_index=True)
-#     keg = djmodels.ForeignKey(Kegs, on_delete=djmodels.CASCADE)
-#     raw_weight_reading = djmodels.FloatField(default=0.0)
-#     weight = djmodels.FloatField(default=0.0)
-#
+
+class Kegs(djmodels.Model):
+    id = djmodels.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    creation_time = djmodels.DateTimeField(
+        auto_now_add=True, auto_now=False, blank=True, db_index=True)
+    scale = djmodels.ForeignKey(Scales, on_delete=djmodels.CASCADE)
+    full_weight_reading = djmodels.FloatField()
+    full_weight = djmodels.FloatField()

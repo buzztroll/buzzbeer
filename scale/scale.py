@@ -33,6 +33,9 @@ class TestScale(object):
     def get_weight(self):
         return random.uniform(5000.5, 5100.9)
 
+    def get_raw_weight(self):
+        return self.get_weight()
+
     def get_zero_offset(self):
         return 5015.9
 
@@ -100,6 +103,20 @@ class ScaleManager(object):
         try:
             # TODO: what do i do with this value?
             self.full_weight = self._scale_src.get_weight()
+        finally:
+            self._lock.release()
+
+    def get_weight(self):
+        self._lock.acquire()
+        try:
+            return self._scale_src.get_weight()
+        finally:
+            self._lock.release()
+
+    def get_raw_weight(self):
+        self._lock.acquire()
+        try:
+            return self._scale_src.get_raw_weight()
         finally:
             self._lock.release()
 
