@@ -1,5 +1,31 @@
 {% extends "base.html" %}
 
+{%  block sub_header %}
+    <script src='https://cdn.plot.ly/plotly-2.32.0.min.js'></script>
+
+    <script type="text/javascript">
+        function doGauge() {
+            var data = [
+                {
+                    domain: { x: [0, 1], y: [0, 1] },
+                    value: {{beers_left}},
+                    title: { text: "Beers" },
+                    type: "indicator",
+                    mode: "gauge+number",
+                    gauge: {
+                        axis: {range: [null, {{ total_beers }}], tickwidth: 1, tickcolor: "darkblue"},
+                    }
+                }
+            ];
+
+            var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
+            Plotly.newPlot('gauge_div_id', data, layout);
+        }
+        window.onload = doGauge;
+    </script>
+{% endblock %}
+
+
 {% block content %}
 
 {% if not scale_exists %}
@@ -10,6 +36,7 @@
     <a href="newkeg">New Keg</a>
 {%  else %}
     <div>
+    <div id='gauge_div_id'></div>
     <h2>Stats</h2>
         <table>
             <tr>
