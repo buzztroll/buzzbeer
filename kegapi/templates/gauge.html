@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if not scale_exists %}
+    <h1>You must calibrate your scale.</h1>
+    <a href="calibrate">Calibrate</a>
+{%  elif not keg_exists %}
+    <h1>You must add a new keg.</h1>
+    <a href="newkeg">New Keg</a>
+{%  else %}
+    <div>
+    <h2>Stats</h2>
+        <table>
+            <tr>
+                <td>Ounces Left</td>
+                <td>{{weight_oz}}</td>
+            </tr>
+            <tr>
+                <td>Total Beers</td>
+                <td>{{total_beers}}</td>
+            </tr>
+            <tr>
+                <td>Beers Consumed</td>
+                <td>{{beers_consumed}}</td>
+            </tr>
+            <tr>
+                <td>Beers Remaining</td>
+                <td>{{beers_left}}</td>
+            </tr>
+        </table>
+        </div>
+
+        <hr>
+        <p>To recalibrate your scale click <a href="calibrate">here</a></p>
+{%  endif %}
+
+{% endblock %}

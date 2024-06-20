@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Scale Calibration</h1>
+    <div>
+        <h2>Zero your scale</h2>
+        <p>Take all the weight off the scale and click the button.</p>
+        <form class="inline" action="/keg/calibrate" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="zero_it" id="zero_it_id" value="Z">
+            <button type="submit">
+                Zero
+            </button>
+        </form>
+    </div>
+    <div>
+        <h2>Set a known weight</h2>
+        <p>Add know weight in ounces to the scale and click calibrate.</p>
+        <form class="inline" action="/keg/calibrate" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="calibrate_it" id="calibrate_it_id" value="C">
+            <label>Ounces:</label>
+            <input type="text" name="calibration_value" id="calibration_value_id">
+            <button type="submit">
+                Calibrate
+            </button>
+        </form>
+    </div>
+    <hr>
+    {% if scale_exists %}
+    <div>
+        <h1>Scale Settings</h1>
+        <table>
+            <tr>
+                <td>Creation Time</td>
+                <td>{{creation_time}}</td>
+            </tr>
+            <tr>
+                <td>State</td>
+                <td>{{scale_state}}</td>
+            </tr>
+            <tr>
+                <td>Zero Offset</td>
+                <td>{{zero_offset}}</td>
+            </tr>
+            <tr>
+                <td>Known Weight</td>
+                <td>{{known_weight}}</td>
+            </tr>
+            <tr>
+                <td>Known Weight Reading</td>
+                <td>{{known_weight_reading}}</td>
+            </tr>
+        </table>
+    </div>
+    {% endif %}
+{% endblock %}

@@ -24,20 +24,30 @@ class ScaleSourceBase(object):
 
 
 class TestScale(object):
+
+    def __init__(self):
+        self._zero = None
+        self._scale_factor = 278.0
+        self._max = 538.7
+        self._current = self._max
+
     def zero(self):
-        pass
+        self._zero = random.uniform(self._scale_factor, self._scale_factor*4)
 
     def set_known_weight(self, w):
-        return 51015.9
+        return w * self._scale_factor
 
     def get_weight(self):
-        return random.uniform(5000.5, 5100.9)
+        sub = random.uniform(4.0, 16.0)
+        _g_logger.info(f"subtracting {sub} {self._current}  ")
+        self._current = self._current - sub
+        return self._current
 
     def get_raw_weight(self):
-        return self.get_weight()
+        return self.get_weight() * self._scale_factor
 
     def get_zero_offset(self):
-        return 5015.9
+        return self._zero
 
 #
 #
@@ -119,6 +129,9 @@ class ScaleManager(object):
             return self._scale_src.get_raw_weight()
         finally:
             self._lock.release()
+
+    def get_full_weight(self):
+        return self.full_weight
 
     # start sending in new values
     def start(self):

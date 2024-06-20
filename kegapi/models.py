@@ -35,5 +35,4 @@ class Kegs(djmodels.Model):
     creation_time = djmodels.DateTimeField(
         auto_now_add=True, auto_now=False, blank=True, db_index=True)
     scale = djmodels.ForeignKey(Scales, on_delete=djmodels.CASCADE)
-    full_weight_reading = djmodels.FloatField()
     full_weight = djmodels.FloatField()

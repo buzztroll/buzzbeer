@@ -25,5 +25,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
     path("kegapi-auth/", include('rest_framework.urls')),
-    path("api/", include(gauge_urls)),
+    path("keg/", include(gauge_urls)),
 ]

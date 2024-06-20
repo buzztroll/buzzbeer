@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if not scale_exists %}
+    <h1>You must calibrate your scale.</h1>
+    <a href="calibrate">Calibrate</a>
+    {%  else %}
+    <h1>New Keg</h1>
+    <p>Put a full keg on the calibrated scale and click the button,</p>
+    <div>
+    <h3>NOTE: If you click this when the keg isn't new it will mess up the measurements</h3>
+        <form class="inline" action="/keg/newkeg" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="new_keg" id="new_keg_id" value="K">
+            <button type="submit">
+                New Keg
+            </button>
+        </form>
+    </div>
+        {% if keg_exists %}
+        <div>
+            <h2>Current Keg</h2>
+            <table>
+            <tr>
+                <td>Creation Time</td>
+                <td>{{creation_time}}</td>
+            </tr>
+            <tr>
+                <td>Weight</td>
+                <td>{{weight}}</td>
+            </tr>
+        </table>
+        </div>
+        {% endif %}
+    {%  endif %}
+{% endblock %}
