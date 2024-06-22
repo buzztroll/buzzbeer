@@ -4,16 +4,40 @@
     <script src='https://cdn.plot.ly/plotly-2.32.0.min.js'></script>
 
     <script type="text/javascript">
-        function doGauge() {
+
+        function httpGetAsync(theUrl, callback)
+        {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() {
+                console.log(xmlHttp.readyState);
+                console.log(xmlHttp.status);
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
+            }
+            xmlHttp.open("GET", theUrl, true); // true for asynchronous
+            xmlHttp.send(null);
+        }
+
+        function data_cb(data) {
+            console.log(data)
+        }
+
+        function refresh() {
+            // httpGetAsync("http://127.0.0.1:8000/keg/api", data_cb)
+            location.reload();
+            // setTimeout(refresh, 5000);
+        }
+
+        function drawGauge(total_beers, beers_left) {
             var data = [
                 {
                     domain: { x: [0, 1], y: [0, 1] },
-                    value: {{beers_left}},
+                    value: beers_left,
                     title: { text: "Beers" },
                     type: "indicator",
                     mode: "gauge+number",
                     gauge: {
-                        axis: {range: [null, {{ total_beers }}], tickwidth: 1, tickcolor: "darkblue"},
+                        axis: {range: [null, total_beers], tickwidth: 1, tickcolor: "darkblue"},
                     }
                 }
             ];
@@ -21,7 +45,12 @@
             var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
             Plotly.newPlot('gauge_div_id', data, layout);
         }
-        window.onload = doGauge;
+
+        function buzzOnLoad() {
+            drawGauge({{ total_beers }}, {{beers_left}});
+            setTimeout(refresh, 5000);
+        }
+        window.onload = buzzOnLoad;
     </script>
 {% endblock %}
 
@@ -57,9 +86,6 @@
             </tr>
         </table>
         </div>
-
-        <hr>
-        <p>To recalibrate your scale click <a href="calibrate">here</a></p>
 {%  endif %}
 
 {% endblock %}

@@ -17,6 +17,12 @@ import django.template.loader as djtemplateloader
 _g_logger = logging.getLogger(__name__)
 
 
+def _float_preceision(f, dps):
+    p = dps * 10
+    x = int(f * p)
+    return x / float(p)
+
+
 def _get_scale():
     try:
         s = models.Scales.objects.latest("creation_time")
@@ -68,7 +74,6 @@ class KegApi(restview.APIView):
             scale_mgr = scale_states.get_scale_manager_singleton()
             new_keg = models.Kegs()
             new_keg.scale = scale_db_obj
-            new_keg.full_weight_reading = scale_mgr.get_weight()
             new_keg.full_weight = scale_mgr.get_raw_weight()
             new_keg.save()
             serializer = serializers.KegSerializer(new_keg, many=False)
@@ -116,14 +121,13 @@ def gauge(request):
             total_beers = full / 12.0
             beers_consumed = (full - oz) / 12.0
             beers_left = total_beers - beers_consumed
-            context['weight_oz'] = oz
-            context['total_beers'] = total_beers
-            context['beers_consumed'] = beers_consumed
-            context['beers_left'] = beers_left
+            context['weight_oz'] = _float_preceision(oz, 1)
+            context['total_beers'] = _float_preceision(total_beers, 1)
+            context['beers_consumed'] = _float_preceision(beers_consumed, 1)
+            context['beers_left'] = _float_preceision(beers_left, 1)
             context['keg_exists'] = True
         except models.Kegs.DoesNotExist:
-                context['keg_exists'] = False
-
+            context['keg_exists'] = False
 
     template = djtemplateloader.get_template("gauge.html")
     return djhttp.HttpResponse(template.render(context, request))
@@ -138,7 +142,8 @@ def calibrate(request):
                 scale_db_obj = models.Scales()
             scale_sm.zero(scale_db_obj)
         elif "calibrate_it" in request.POST:
-            known_weight = request.POST['calibration_value']
+            known_weight = float(request.POST['calibration_value'])
+            _g_logger.info(f"setting calibration to {known_weight}")
             scale_sm = scale_states.get_scale_sm_singleton()
             scale_db_obj = _get_scale()
             scale_sm.calibrate(scale_db_obj, known_weight=known_weight)

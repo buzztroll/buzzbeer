@@ -12,4 +12,4 @@ class ScaleSerializer(serializers.ModelSerializer):
 class KegSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Kegs
-        fields = ['id', 'creation_time', 'full_weight_reading', 'full_weight']
+        fields = ['id', 'creation_time', 'full_weight']

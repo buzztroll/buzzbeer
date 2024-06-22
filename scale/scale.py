@@ -41,6 +41,10 @@ class TestScale(object):
         sub = random.uniform(4.0, 16.0)
         _g_logger.info(f"subtracting {sub} {self._current}  ")
         self._current = self._current - sub
+
+        if self._current < 0:
+            self._current = self._scale_factor * 50
+            return 0
         return self._current
 
     def get_raw_weight(self):
@@ -49,29 +53,29 @@ class TestScale(object):
     def get_zero_offset(self):
         return self._zero
 
-#
-#
-# class GandolfScale(ScaleSourceBase):
-#     def __init__(self, data_pin, clock_pin, read_iterations=7):
-#         self._data_pin = data_pin
-#         self._clock_pin = clock_pin
-#         self._read_iterations = read_iterations
-#         self.hx = hx711.HX711(dout_pin=self._data_pin,
-#                               pd_sck_pin=self._clock_pin)
-#
-#     def zero(self):
-#         err = self.hx.zero()
-#         if err:
-#             raise ValueError('Tare is unsuccessful.')
-#
-#     def set_known_weight(self, w):
-#         reading = self.hx.get_data_mean()
-#         ratio = reading / w
-#         self.hx.set_scale_ratio(ratio)
-#         return reading
-#
-#     def get_weight(self):
-#         return self.hx.get_weight_mean(self._read_iterations)
+
+
+class GandolfScale(ScaleSourceBase):
+    def __init__(self, data_pin, clock_pin, read_iterations=7):
+        self._data_pin = data_pin
+        self._clock_pin = clock_pin
+        self._read_iterations = read_iterations
+        self.hx = hx711.HX711(dout_pin=self._data_pin,
+                              pd_sck_pin=self._clock_pin)
+
+    def zero(self):
+        err = self.hx.zero()
+        if err:
+            raise ValueError('Tare is unsuccessful.')
+
+    def set_known_weight(self, w):
+        reading = self.hx.get_data_mean()
+        ratio = reading / w
+        self.hx.set_scale_ratio(ratio)
+        return reading
+
+    def get_weight(self):
+        return self.hx.get_weight_mean(self._read_iterations)
 
 
 class ScaleManager(object):
