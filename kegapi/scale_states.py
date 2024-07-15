@@ -74,7 +74,7 @@ def get_scale_reader_singleton():
     _g_singleton_mutex.acquire()
     try:
         if _g_scale_reader is None:
-            _g_scale_reader = scale.TestScale()
+            _g_scale_reader = scale.GandolfScale(17, 27)
 
         return _g_scale_reader
     finally:

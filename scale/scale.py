@@ -1,10 +1,12 @@
+import atexit
 import logging
 import random
 import threading
 
 from kegapi import sm
 
-# import hx711
+import RPi.GPIO as GPIO
+import hx711
 
 _g_logger = logging.getLogger(__name__)
 
@@ -54,12 +56,17 @@ class TestScale(object):
         return self._zero
 
 
+def _clean_gpio():
+    GPIO.cleanup()
+
 
 class GandolfScale(ScaleSourceBase):
     def __init__(self, data_pin, clock_pin, read_iterations=7):
         self._data_pin = data_pin
         self._clock_pin = clock_pin
         self._read_iterations = read_iterations
+        GPIO.setmode(GPIO.BCM)
+        atexit.register(_clean_gpio)
         self.hx = hx711.HX711(dout_pin=self._data_pin,
                               pd_sck_pin=self._clock_pin)
 
@@ -76,6 +83,9 @@ class GandolfScale(ScaleSourceBase):
 
     def get_weight(self):
         return self.hx.get_weight_mean(self._read_iterations)
+
+    def get_zero_offset(self):
+        return self.hx.get_current_offset()
 
 
 class ScaleManager(object):
